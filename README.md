@@ -1,5 +1,7 @@
 # Solar System Three.js
 
+> v2.0: ES module architecture with professional code organization and decomposed helper functions.
+
 Interactive real-time 3D space experience built with Three.js.
 
 This project renders a stylized solar system scene with a controllable ship, asteroid belt simulation, boss encounter logic, projectile combat, shader-driven solar effects, and an in-game HUD.

@@ -1,36 +1,44 @@
-(function() {
-    window.SolarApp = window.SolarApp || {};
+import { applyCompatibilityShims } from "./core/compat.js";
+import { initScene } from "./core/scene.js";
+import { setupInput } from "./core/input.js";
+import {
+    build as buildSolarSystem,
+    addLightsAndMaterials,
+    addStarField
+} from "./systems/solar-system.js";
+import { build as buildDyson } from "./systems/dyson.js";
+import { init as initAsteroids } from "./systems/asteroids.js";
+import { load as loadPlayer } from "./systems/player.js";
+import { load as loadGalactus } from "./systems/galactus.js";
+import { build as buildCloud } from "./systems/cloud.js";
+import { init as initCombat } from "./systems/combat.js";
+import { create as createHud } from "./ui/hud.js";
+import { start } from "./engine/loop.js";
 
-    var core = window.SolarApp.core;
-    var systems = window.SolarApp.systems;
-    var ui = window.SolarApp.ui;
-    var engine = window.SolarApp.engine;
+/*
+ * Bootstraps the full application in deterministic order.
+ * Applies compatibility fixes, creates core runtime services,
+ * builds systems, and starts the render/update loop.
+ */
+function bootstrap() {
+    applyCompatibilityShims();
+    initScene();
+    setupInput();
 
-    /*
-     * Bootstraps the full application in deterministic order.
-     * Applies compatibility fixes, creates core runtime services,
-     * builds systems, and starts the render/update loop.
-     */
-    function bootstrap() {
-        core.compat.applyCompatibilityShims();
-        core.scene.initScene();
-        core.input.setupInput();
+    buildSolarSystem();
+    addLightsAndMaterials();
+    buildDyson();
+    addStarField();
 
-        systems.solarSystem.build();
-        systems.solarSystem.addLightsAndMaterials();
-        systems.dyson.build();
-        systems.solarSystem.addStarField();
+    initAsteroids();
+    loadPlayer();
+    loadGalactus();
+    buildCloud();
+    initCombat();
 
-        systems.asteroids.init();
-        systems.player.load();
-        systems.galactus.load();
-        systems.cloud.build();
-        systems.combat.init();
+    createHud();
 
-        ui.hud.create();
+    start();
+}
 
-        engine.loop.start();
-    }
-
-    bootstrap();
-})();
+bootstrap();

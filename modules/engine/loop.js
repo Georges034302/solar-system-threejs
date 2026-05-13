@@ -1,58 +1,63 @@
-(function() {
-    window.SolarApp = window.SolarApp || {};
-    window.SolarApp.engine = window.SolarApp.engine || {};
+import state from "../state.js";
+import { animate as animateSolarSystem } from "../systems/solar-system.js";
+import { animate as animateDyson } from "../systems/dyson.js";
+import { animate as animateAsteroids } from "../systems/asteroids.js";
+import {
+    animateConsumeAsteroids,
+    animateBeams,
+    animatePerish
+} from "../systems/galactus.js";
+import { animate as animateCloud } from "../systems/cloud.js";
+import { animatePlayer, animateFollowCamera } from "../systems/player.js";
+import {
+    animateFire,
+    animateProjectiles,
+    animateCollisions,
+    animateImpacts
+} from "../systems/combat.js";
+import { update as updateHud } from "../ui/hud.js";
 
-    var state = window.SolarApp.state;
-    var systems = window.SolarApp.systems;
-    var ui = window.SolarApp.ui;
+/*
+ * Starts the runtime frame loop.
+ * A shared clock is initialized once so every system
+ * receives consistent delta-time values per frame.
+ */
+export function start() {
+    state.clock = new THREE.Clock();
+    animate();
+}
 
-    /*
-     * Starts the runtime frame loop.
-     * A shared clock is initialized once so every system
-     * receives consistent delta-time values per frame.
-     */
-    function start() {
-        state.clock = new THREE.Clock();
-        animate();
+/*
+ * Main per-frame update pipeline.
+ * Executes systems in stable order, updates UI,
+ * then renders the scene with the active camera.
+ */
+function animate() {
+    requestAnimationFrame(animate);
+
+    var dt = Math.min(state.clock.getDelta(), 0.05);
+    animateSolarSystem();
+    animateDyson();
+    animateAsteroids();
+    animateConsumeAsteroids();
+    animateBeams(dt);
+    animateCloud();
+
+    animatePlayer(dt);
+    animateFollowCamera();
+
+    animateFire(dt);
+    animateProjectiles(dt);
+    animateCollisions();
+    animateImpacts(dt);
+
+    animatePerish(dt);
+
+    updateHud();
+
+    if (state.controls) {
+        state.controls.update();
     }
 
-    /*
-     * Main per-frame update pipeline.
-     * Executes systems in stable order, updates UI,
-     * then renders the scene with the active camera.
-     */
-    function animate() {
-        requestAnimationFrame(animate);
-
-        var dt = Math.min(state.clock.getDelta(), 0.05);
-
-        systems.solarSystem.animate();
-        systems.dyson.animate();
-        systems.asteroids.animate();
-        systems.galactus.animateConsumeAsteroids();
-        systems.galactus.animateBeams(dt);
-        systems.cloud.animate();
-
-        systems.player.animatePlayer(dt);
-        systems.player.animateFollowCamera();
-
-        systems.combat.animateFire(dt);
-        systems.combat.animateProjectiles(dt);
-        systems.combat.animateCollisions();
-        systems.combat.animateImpacts(dt);
-
-        systems.galactus.animatePerish(dt);
-
-        ui.hud.update();
-
-        if (state.controls) {
-            state.controls.update();
-        }
-
-        state.renderer.render(state.scene, state.camera);
-    }
-
-    window.SolarApp.engine.loop = {
-        start: start
-    };
-})();
+    state.renderer.render(state.scene, state.camera);
+}
