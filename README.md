@@ -127,11 +127,6 @@ See [LICENSE.md](LICENSE.md) for the full text.
 
 Documentation related to setup and deployment is available in [docs/SETUP.md](docs/SETUP.md) and [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
-## Notes
-
-- The current architecture favors safe sequential script loading in index.html.
-- A future migration path to ES modules can be done without changing system boundaries.
-
 --- 
 
 <p><span style="font-size:12px;color:#9ca3af;">🧑‍🏫 Author: Dr. Georges Bou Ghantous</span></p>
