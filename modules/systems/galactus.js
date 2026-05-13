@@ -56,6 +56,11 @@ export function animateConsumeAsteroids() {
 export function animateBeams(dt) {
     if (!state.galactus || !state.asteroidBelt || !state.beamLeft || !state.beamRight) return;
 
+    if (state.gameplay.phase !== "playing" || !state.galactus.visible) {
+        hideBeams();
+        return;
+    }
+
     updateBeamCooldown(dt);
 
     if (shouldActivateBeams()) {
@@ -257,6 +262,7 @@ function updateBeamCooldown(dt) {
  */
 function shouldActivateBeams() {
     return (
+        state.gameplay.phase === "playing" &&
         !state.beams.active &&
         state.asteroidParams.beltRadius >= config.galactus.beamTriggerRadius &&
         state.beams.cooldown <= 0

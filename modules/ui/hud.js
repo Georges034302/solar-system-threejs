@@ -1,5 +1,6 @@
 import config from "../config.js";
 import state from "../state.js";
+import { hideBeams } from "../systems/galactus.js";
 
 /*
  * Creates the primary HUD container and value fields.
@@ -49,6 +50,17 @@ export function updatePosition() {
  */
 export function update() {
     if (!state.hud.healthValue || !state.hud.statusValue) return;
+
+    if (
+        state.gameplay.phase !== "playing" &&
+        (
+            state.beams.active ||
+            (state.beamLeft && state.beamLeft.visible) ||
+            (state.beamRight && state.beamRight.visible)
+        )
+    ) {
+        hideBeams();
+    }
 
     updatePosition();
     state.hud.healthValue.textContent = state.gameplay.health + " / " + config.combat.galactusMaxHealth;

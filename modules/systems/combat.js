@@ -2,6 +2,11 @@ import config from "../config.js";
 import state from "../state.js";
 import { hideBeams, reset as resetGalactus } from "./galactus.js";
 
+var collisionRayCaster = new THREE.Raycaster();
+var sharedProjectileGeometry = new THREE.CylinderGeometry(0.11, 0.11, 1.1, 10);
+var sharedProjectileMaterial = new THREE.MeshBasicMaterial({ color: 0xff7a33 });
+var sharedImpactGeometry = new THREE.SphereGeometry(config.combat.impactRadius, 8, 8);
+
 /*
  * Initializes combat runtime state for a fresh session.
  * Clears transient entities and restores baseline values
@@ -79,11 +84,9 @@ export function animateProjectiles(dt) {
 export function animateCollisions() {
     if (!state.galactus || state.gameplay.phase !== "playing") return;
 
-    var rayCaster = new THREE.Raycaster();
-
     for (var i = state.gameplay.projectiles.length - 1; i >= 0; i--) {
         var projectile = state.gameplay.projectiles[i];
-        var hitPoint = getProjectileHitPoint(projectile, rayCaster);
+        var hitPoint = getProjectileHitPoint(projectile, collisionRayCaster);
 
         if (!hitPoint) {
             continue;
@@ -113,8 +116,7 @@ export function animateImpacts(dt) {
         impact.mesh.material.opacity = Math.max(0, 1 - ageRatio);
 
         if (impact.life <= 0) {
-            state.scene.remove(impact.mesh);
-            state.gameplay.impacts.splice(i, 1);
+            removeImpactAt(i);
         }
     }
 }
@@ -156,9 +158,8 @@ function removeAllProjectiles() {
  */
 function removeAllImpacts() {
     for (var i = state.gameplay.impacts.length - 1; i >= 0; i--) {
-        state.scene.remove(state.gameplay.impacts[i].mesh);
+        removeImpactAt(i);
     }
-    state.gameplay.impacts = [];
 }
 
 /*
@@ -187,9 +188,7 @@ function resetPlayerToSpawn() {
 function spawnProjectile() {
     if (!state.playerShip || state.gameplay.phase !== "playing") return;
 
-    var geometry = new THREE.CylinderGeometry(0.11, 0.11, 1.1, 10);
-    var material = new THREE.MeshBasicMaterial({ color: 0xff7a33 });
-    var projectile = new THREE.Mesh(geometry, material);
+    var projectile = new THREE.Mesh(sharedProjectileGeometry, sharedProjectileMaterial);
 
     var forward = getPlayerForwardVector();
 
@@ -291,14 +290,13 @@ function applyProjectileHit(projectileIndex, hitPoint) {
  * and removed automatically after their lifetime.
  */
 function spawnImpact(position) {
-    var impactGeometry = new THREE.SphereGeometry(config.combat.impactRadius, 8, 8);
     var impactMaterial = new THREE.MeshBasicMaterial({
         color: 0xffc27a,
         transparent: true,
         opacity: 0.9
     });
 
-    var impactMesh = new THREE.Mesh(impactGeometry, impactMaterial);
+    var impactMesh = new THREE.Mesh(sharedImpactGeometry, impactMaterial);
     impactMesh.position.copy(position);
     state.scene.add(impactMesh);
 
@@ -308,4 +306,17 @@ function spawnImpact(position) {
         maxLife: config.combat.impactLife,
         growth: config.combat.impactGrowth
     });
+}
+
+/*
+ * Removes one impact mesh and disposes its unique material.
+ * Geometry is shared globally, so only material is disposed.
+ */
+function removeImpactAt(index) {
+    var impact = state.gameplay.impacts[index];
+    state.scene.remove(impact.mesh);
+    if (impact.mesh.material && typeof impact.mesh.material.dispose === "function") {
+        impact.mesh.material.dispose();
+    }
+    state.gameplay.impacts.splice(index, 1);
 }
