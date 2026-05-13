@@ -37,4 +37,4 @@ http://localhost:8080
 
 - Blank page or missing assets: verify HTTP serving (not file://).
 - Model load errors: confirm models directory and filenames.
-- Shader errors: confirm shader script tags exist in index.html.
+- Import errors: check browser console for module import paths.

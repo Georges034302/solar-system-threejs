@@ -10,11 +10,12 @@ This project is deployed as a static site via GitHub Pages.
 
 ## Deployment Checklist
 
-1. Verify index.html references correct script and asset paths.
+1. Verify index.html ES module entry point (modules/app.js) is correct.
 2. Verify modules/config.js points to valid model filenames.
-3. Confirm docs and README are up to date.
-4. Validate project locally over HTTP.
-5. Push changes to the publishing branch.
+3. Verify all module imports are valid (no circular dependencies).
+4. Confirm docs and README are up to date.
+5. Validate project locally over HTTP.
+6. Push changes to the publishing branch.
 
 ## Post-Deploy Validation
 
