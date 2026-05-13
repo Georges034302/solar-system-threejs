@@ -6,7 +6,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="js/three.js"></script>
-        <script src="js/three.min.js"></script>
         <script src="js/OrbitControls.js"></script>
         <script src="js/PLYLoader.js"></script>
         <script src="js/dat.gui.min.js"></script>
@@ -14,34 +13,10 @@
         <script src="js/MTLLoader.js"></script>
         <link rel="icon" href="data:,">
         <link rel="stylesheet" href="css/layout.css">
-        <title>CG Labs</title>
+        <title>Solar System</title>
     </head>
 
     <body>
-        <div id="info">
-            <div id="titleBar">
-                <p id="pageTitle">Computer Graphics Demo</p>
-                <span id="titleSeparator" aria-hidden="true">-</span>
-                <label id="labSelectorLabel" for="labSelector">Lab</label>
-                <select id="labSelector" aria-label="Select lab">
-                    <option value="">Select</option>
-                    <option value="01">01</option>
-                    <option value="02">02</option>
-                    <option value="03">03</option>
-                    <option value="04">04</option>
-                    <option value="05">05</option>
-                    <option value="06">06</option>
-                    <option value="07">07</option>
-                    <option value="08">08</option>
-                    <option value="09">09</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                </select>
-            </div>
-            <div id="labStatus" hidden></div>
-        </div>
-        <script src="js/lab-loader.js"></script>
-        
         <!-- =========================================================
         Lab 10 – Vertex Shader
         ========================================================= -->
@@ -72,6 +47,23 @@
                 gl_FragColor = vec4(color, vAlpha);
             }
         </script>
+
+        <script src="modules/config.js"></script>
+        <script src="modules/state.js"></script>
+        <script src="modules/core/compat.js"></script>
+        <script src="modules/core/scene.js"></script>
+        <script src="modules/core/input.js"></script>
+        <script src="modules/core/assets.js"></script>
+        <script src="modules/systems/solar-system.js"></script>
+        <script src="modules/systems/dyson.js"></script>
+        <script src="modules/systems/asteroids.js"></script>
+        <script src="modules/systems/player.js"></script>
+        <script src="modules/systems/combat.js"></script>
+        <script src="modules/systems/galactus.js"></script>
+        <script src="modules/systems/cloud.js"></script>
+        <script src="modules/ui/hud.js"></script>
+        <script src="modules/engine/loop.js"></script>
+        <script src="modules/app.js"></script>
     </body>
 
 </html>
