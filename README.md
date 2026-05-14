@@ -129,4 +129,4 @@ Documentation related to setup and deployment is available in [docs/SETUP.md](do
 
 --- 
 
-<p><span style="font-size:12px;color:#9ca3af;">🧑‍🏫 Author: Dr. Georges Bou Ghantous</span></p>
+<sub><i><span style="color:#B0B0B0">👤 Author: **Georges Bou Ghantous**</span></i></sub>
